@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROS2 Map Editor</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="hdr">
+  <div class="logo">&#x1F916; ROS2 Map Editor</div>
+  <div class="hdr-sep"></div>
+
+  <button class="btn" onclick="toggleTheme()" title="Toggle Light/Dark Theme">&#x1F313; Theme</button>
+  <button class="btn" onclick="$('pgm-in').click()">&#x1F4C2; Load PGM</button>
+  <input type="file" id="pgm-in" accept=".pgm">
+  <button class="btn" onclick="$('yaml-in').click()">&#x1F4C4; Load YAML</button>
+  <input type="file" id="yaml-in" accept=".yaml,.yml">
+  <div class="file-name" id="hdr-pgm">No PGM loaded</div>
+  <div class="file-name" id="hdr-yaml" style="color:var(--success)">No YAML loaded</div>
+
+  <div class="hdr-sep"></div>
+  <button class="btn" onclick="$('merge-pgm-in').click()" style="background:var(--active);border-color:var(--blue);color:var(--accent)" title="Load a 2nd map to combine into this one">&#x1F5FA;&#xFE0F; Combine Maps</button>
+  <input type="file" id="merge-pgm-in" accept=".pgm" style="display:none">
+
+  <div class="hdr-sep"></div>
+  <button class="btn" onclick="undo()" id="btn-undo" disabled title="Ctrl+Z">&#x21B6; Undo</button>
+  <button class="btn" onclick="redo()" id="btn-redo" disabled title="Ctrl+Shift+Z">&#x21B7; Redo</button>
+  <div class="hdr-sep"></div>
+
+  <button class="btn" onclick="resetView()" title="Fit map to window">&#x2316; Fit</button>
+  <button class="btn" onclick="toggleOriginal()" id="btn-orig" title="Toggle original map overlay">&#x1F441; Original</button>
+
+  <div class="hdr-sep"></div>
+  <label style="font-size:12px;color:var(--text2)">Save as:</label>
+  <input type="text" id="save-name" placeholder="map_name" value="edited_map">
+  <button class="btn primary" onclick="exportAll()">&#x1F4BE; Export PGM + YAML</button>
+  <button class="btn" onclick="exportImage()" style="background:var(--active);border-color:var(--blue);color:var(--accent); display: inline-flex; align-items: center;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg> Export PNG</button>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+
+    <!-- Tools -->
+    <div class="s-section">
+      <div class="s-title">Tools</div>
+      <div style="font-size:10px;color:var(--text2);padding:2px 6px 6px;line-height:1.5">
+        &#x1F5B1; Pan: middle-mouse,<br>Alt+drag or Space+drag
+      </div>
+      <button class="tool-btn" id="tbtn-draw"   onclick="setTool('draw')">
+        <span class="tool-icon">&#x270F;&#xFE0F;</span>Brush Draw<span class="tool-key">D</span></button>
+      <button class="tool-btn" id="tbtn-polygon" onclick="setTool('polygon')">
+        <span class="tool-icon">&#x1F5D2;&#xFE0F;</span>Polygon Draw<span class="tool-key">G</span></button>
+      <button class="tool-btn" id="tbtn-measure" onclick="setTool('measure')">
+        <span class="tool-icon">&#x1F4CF;</span>Measure<span class="tool-key">M</span></button>
+      <button class="tool-btn" id="tbtn-rect" onclick="setTool('rect')">
+        <span class="tool-icon">&#x25AD;</span>Rect Draw<span class="tool-key">R</span></button>
+      <button class="tool-btn" id="tbtn-circle" onclick="setTool('circle')">
+        <span class="tool-icon">&#x25CB;</span>Circle Draw<span class="tool-key">C</span></button>
+      <button class="tool-btn" id="tbtn-waypoint" onclick="setTool('waypoint')">
+        <span class="tool-icon">&#x1F4CD;</span>Waypoint<span class="tool-key">W</span></button>
+
+    </div>
+
+
+    <!-- Brush -->
+    <div class="s-section" id="brush-section">
+      <div class="s-title">Brush Size</div>
+      <div class="s-row">
+        <span class="s-label">Size</span>
+        <input type="range" id="brush-sz" min="1" max="60" value="3"
+          oninput="S.brush=+this.value;$('brush-lbl').textContent=this.value+'px'">
+        <span class="s-val" id="brush-lbl">3px</span>
+      </div>
+    </div>
+
+    <!-- Shape Options (rect / circle) -->
+    <div class="s-section" id="shape-section" style="display:none">
+      <div class="s-title">Shape Options</div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="shape-fill">
+        <label for="shape-fill">Fill shape</label>
+      </div>
+      <div style="font-size:10px;color:var(--text2);line-height:1.5">
+        Drag to draw. Brush size = outline thickness.
+      </div>
+    </div>
+
+    <!-- Draw Color -->
+    <div class="s-section" id="color-section">
+      <div class="s-title">Draw Color</div>
+      <div class="color-row">
+        <div class="swatch active" id="sw-wall" style="background:#1e293b"
+          onclick="setColor('wall')" title="Wall / Occupied (value 0)">
+          <span class="swatch-label">Wall</span></div>
+        <div class="swatch" id="sw-free" style="background:#ffffff;border-color:#cbd5e1"
+          onclick="setColor('free')" title="Free space (value 254)">
+          <span class="swatch-label">Free</span></div>
+        <div class="swatch" id="sw-unknown" style="background:#94a3b8"
+          onclick="setColor('unknown')" title="Unknown (value 205)">
+          <span class="swatch-label">Unknown</span></div>
+      </div>
+    </div>
+
+    <!-- Polygon Options -->
+    <div class="s-section" id="poly-section">
+      <div class="s-title">Polygon</div>
+      <div class="mode-row">
+        <button class="mode-btn active" id="mbtn-open"   onclick="setPolyMode('open')">Open</button>
+        <button class="mode-btn"        id="mbtn-closed" onclick="setPolyMode('closed')">Closed</button>
+      </div>
+      <div class="checkbox-row" id="fill-row" style="display:none;padding:6px;background:#f0fdf4;border-radius:5px;border:1px solid #16a34a">
+        <input type="checkbox" id="fill-chk">
+        <label for="fill-chk" style="color:#15803d;font-weight:600">&#x25A0; Solid Fill</label>
+      </div>
+      <div style="font-size:10px;color:var(--text2);margin-bottom:8px;line-height:1.5">
+        Click to add points<br>
+        Double-click or Enter to finish<br>
+        Right-click to undo last point<br>
+        Esc to cancel
+      </div>
+      <button class="act-btn green" onclick="finishPoly()">&#x2714; Finish  (Enter)</button>
+      <button class="act-btn red"   onclick="cancelPoly()">&#x2716; Cancel  (Esc)</button>
+      <div id="poly-count" style="font-size:11px;color:var(--text2);text-align:center;margin-top:4px">0 points</div>
+    </div>
+
+    <!-- Merge Section -->
+    <div class="s-section" id="merge-section" style="display:none">
+      <div class="s-title">Merge Map</div>
+      <div style="font-size:10px;color:var(--text2);margin-bottom:8px;line-height:1.5">
+        Drag map to move.
+      </div>
+      <div class="s-row">
+        <span class="s-label">Rotate</span>
+        <input type="range" id="merge-rot" min="-180" max="180" value="0"
+          oninput="S.mRot=+this.value;$('mrot-lbl').textContent=this.value+'°';renderOverlay()">
+        <span class="s-val" id="mrot-lbl">0°</span>
+      </div>
+      <div style="display:flex;gap:4px;margin-bottom:8px">
+        <button class="act-btn" style="flex:1;margin:0" onclick="S.mFlipX=!S.mFlipX;renderOverlay()">Flip X</button>
+        <button class="act-btn" style="flex:1;margin:0" onclick="S.mFlipY=!S.mFlipY;renderOverlay()">Flip Y</button>
+      </div>
+      <button class="act-btn" onclick="autoAlignMerge()" style="background:#eff6ff;border-color:#3b82f6;color:#2563eb;margin-bottom:8px" title="Use ICP to automatically align the map">✨ Auto-Align</button>
+      <button class="act-btn green" onclick="burnMerge()">&#x2714; Combine Maps</button>
+      <button class="act-btn red" onclick="cancelMerge()">&#x2716; Cancel</button>
+    </div>
+
+    <!-- Undo/Redo (sidebar shortcuts) -->
+    <!-- Measure Info -->
+    <div class="s-section" id="measure-section" style="display:none">
+      <div class="s-title">Measure</div>
+      <div class="mode-row" style="margin-bottom:8px">
+        <button class="mode-btn active" id="mbtn-line" onclick="setMsrMode('line')">Line</button>
+        <button class="mode-btn"        id="mbtn-path" onclick="setMsrMode('path')">Path</button>
+        <button class="mode-btn"        id="mbtn-area" onclick="setMsrMode('area')">Area</button>
+      </div>
+      <div id="msr-hint" style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:6px">Click A then B to measure.</div>
+      <div id="msr-live" style="font-size:18px;font-weight:700;color:#f59e0b;text-align:center;padding:4px 0;min-height:26px">—</div>
+      <div id="msr-sub"  style="font-size:10px;color:var(--text2);text-align:center;margin-bottom:2px"></div>
+      <div id="msr-info" style="font-size:10px;color:var(--text2);text-align:center;margin-bottom:6px"></div>
+      <div style="display:flex;gap:4px;margin-bottom:8px">
+        <button class="act-btn green" id="msr-save-btn" onclick="saveMeasure()" style="flex:1;margin:0;display:none">&#x2714; Save</button>
+        <button class="act-btn red"   onclick="cancelActive()" style="flex:1;margin:0">&#x2716; Cancel</button>
+      </div>
+      <div id="msr-list" style="max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:3px"></div>
+      <button class="act-btn red" id="msr-clearall" onclick="clearAllMsr()" style="display:none;margin-top:6px">&#x1F5D1; Clear All</button>
+    </div>
+
+
+    <!-- Waypoints -->
+    <div class="s-section" id="waypoint-section" style="display:none">
+      <div class="s-title">Waypoints</div>
+      <div style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:8px">
+        Click &amp; drag to set position + heading, release to place.<br>
+        Right-click a marker to delete it.
+      </div>
+      <div id="wp-list" style="max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;margin-bottom:8px"></div>
+      <button class="act-btn green" onclick="exportWaypoints()">&#x1F4BE; Export Waypoints JSON</button>
+      <button class="act-btn red" id="wp-clearall" onclick="clearAllWaypoints()" style="display:none">&#x1F5D1; Clear All</button>
+      <div id="wp-count" style="font-size:11px;color:var(--text2);text-align:center;margin-top:4px">0 waypoints</div>
+    </div>
+
+
+
+
+  </div><!-- /sidebar -->
+
+  <!-- CANVAS WRAP -->
+  <div id="canvas-wrap">
+    <canvas id="main-canvas"></canvas>
+    <canvas id="overlay-canvas"></canvas>
+    <div id="hint">
+      <div class="h-icon">&#x1F5FA;&#xFE0F;</div>
+      <h2>ROS2 Map Editor</h2>
+      <p>Click <strong>Load PGM</strong> to open your SLAM Toolbox map</p>
+      <p style="font-size:11px;margin-top:8px;color:#555">Supports P5 (binary) and P2 (ASCII) PGM format</p>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDEBAR -->
+  <div id="sidebar-right">
+    <!-- Algorithms -->
+    <div class="s-section">
+      <div class="s-title">Algorithms ✨</div>
+      <button class="act-btn" onclick="applyMedianFilter()" title="Removes isolated stray pixels (noise) from the map">🧹 Auto-Clean Noise</button>
+      <button class="act-btn" id="tbtn-astar" onclick="setTool('astar')" title="Simulate A* Pathfinding">🗺️ A* Path Preview</button>
+    </div>
+
+    <!-- Inflation Preview -->
+    <div class="s-section">
+      <div class="s-title">Inflation Preview</div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="infl-on" onchange="toggleInflation()">
+        <label for="infl-on">Show inflation</label>
+      </div>
+      <div class="s-row">
+        <span class="s-label">Radius</span>
+        <input type="range" id="infl-r" min="0.05" max="2.0" step="0.05" value="0.2"
+          oninput="S.inflRadiusM=+this.value;$('infl-lbl').textContent=this.value+'m';if(S.showInflation)recomputeInflation()">
+        <span class="s-val" id="infl-lbl">0.2m</span>
+      </div>
+      <div style="font-size:10px;color:var(--text2)">Orange zone = area nav2 avoids (approx.)</div>
+    </div>
+
+    <!-- Grid -->
+    <div class="s-section">
+      <div class="s-title">Grid &amp; Scale</div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="grid-on" onchange="S.showGrid=this.checked;render()">
+        <label for="grid-on">Show grid</label>
+      </div>
+      <div class="s-row">
+        <span class="s-label">Spacing</span>
+        <select id="grid-sp" onchange="S.gridSpacingM=+this.value;render()" style="flex:1;font-size:11px">
+          <option value="0.5">0.5 m</option>
+          <option value="1" selected>1 m</option>
+          <option value="2">2 m</option>
+          <option value="5">5 m</option>
+          <option value="10">10 m</option>
+        </select>
+      </div>
+      <div style="font-size:10px;color:var(--text2)">Scale bar always visible on map.</div>
+    </div>
+
+    <div class="s-section">
+      <div class="s-title">History</div>
+      <button class="act-btn" onclick="undo()" id="sb-undo" disabled>&#x21B6; Undo  Ctrl+Z</button>
+      <button class="act-btn" onclick="redo()" id="sb-redo" disabled>&#x21B7; Redo  Ctrl+Shift+Z</button>
+    </div>
+
+    <!-- Zoom -->
+    <div class="s-section">
+      <div class="s-title">View</div>
+      <div style="display:flex;gap:4px;margin-bottom:6px">
+        <button class="act-btn" style="flex:1;margin:0" onclick="zoomBy(1.5)">+ Zoom In</button>
+        <button class="act-btn" style="flex:1;margin:0" onclick="zoomBy(1/1.5)">− Zoom Out</button>
+      </div>
+      <button class="act-btn" onclick="resetView()">&#x2316; Fit to Window</button>
+    </div>
+
+  </div><!-- /sidebar-right -->
+
+</div><!-- /main -->
+
+<!-- STATUS BAR -->
+<div id="sbar">
+  <div class="sbar-item">Tool: <span id="st-tool">Pan</span></div>
+  <div class="sbar-item">Pos: <span id="st-pos">—</span></div>
+  <div class="sbar-item" id="st-world-wrap" style="display:none">&#x1F30D; <span id="st-world" style="color:#7ee787">—</span></div>
+  <div class="sbar-item">Pixel: <span id="st-px">—</span></div>
+  <div class="sbar-item">Zoom: <span id="st-zoom">100%</span></div>
+  <div class="sbar-item">Map: <span id="st-size">—</span></div>
+  <div class="sbar-item" id="st-poly-wrap" style="display:none">Points: <span id="st-pts">0</span></div>
+  <div class="sbar-item" id="st-msr-wrap" style="display:none">&#x1F4CF; <span id="st-msr" style="color:#f0c050">—</span></div>
+  <div class="sbar-item" style="margin-left:auto; opacity:0.6; font-style:italic;">by GC harsha vardhan reddy</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
