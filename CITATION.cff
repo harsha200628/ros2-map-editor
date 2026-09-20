@@ -36,6 +36,6 @@ preferred-citation:
       given-names: GC
       affiliation: "Department of EECE, GITAM Deemed to be University, Bengaluru, India"
   title: "ROS2 Map Editor: A Zero-Installation Browser Tool for Semantic Occupancy-Grid Editing, Navigation-Aware Path Preview, and ICP-Based Map Fusion"
-  journal: "IEEE Robotics and Automation Letters"
+  note: "Preprint"
   year: 2026
   url: "https://github.com/harsha200628/ros2-map-editor"

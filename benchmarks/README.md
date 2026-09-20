@@ -1,11 +1,11 @@
 # Benchmarks — Reproducible Evaluation for Tables II–V
 
 This folder contains all scripts and pre-run results needed to reproduce the
-quantitative results reported in the companion IEEE RA-L paper:
+quantitative results reported in the companion paper:
 
 > GC Harsha Vardhan Reddy, "ROS2 Map Editor: A Zero-Installation Browser Tool
 > for Semantic Occupancy-Grid Editing, Navigation-Aware Path Preview, and
-> ICP-Based Map Fusion," *IEEE Robotics and Automation Letters*, 2026.
+> ICP-Based Map Fusion," 2026.
 
 ---
 

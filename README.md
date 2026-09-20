@@ -2,7 +2,7 @@
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-blue)](https://harsha200628.github.io/ros2-map-editor/)
-[![IEEE RA-L](https://img.shields.io/badge/Paper-IEEE%20RA--L-red)](https://github.com/harsha200628/ros2-map-editor)
+[![Paper](https://img.shields.io/badge/Paper-Manuscript-red)](https://github.com/harsha200628/ros2-map-editor)
 
 > **A zero-installation, purely browser-based tool for semantically correct occupancy-grid post-processing, navigation-aware path preview, and ICP-based multi-session map fusion — designed for Nav2-based mobile robotics workflows.**
 
@@ -152,7 +152,7 @@ ros2-map-editor/
 
 ## Reproducing Paper Results
 
-All benchmark scripts and pre-run results for **Tables II–V** of the companion IEEE RA-L paper are in the [`/benchmarks`](benchmarks/) folder. See [`benchmarks/README.md`](benchmarks/README.md) for setup and run instructions. Raw CSV outputs are provided so results can be verified without re-running.
+All benchmark scripts and pre-run results for **Tables II–V** of the companion paper are in the [`/benchmarks`](benchmarks/) folder. See [`benchmarks/README.md`](benchmarks/README.md) for setup and run instructions. Raw CSV outputs are provided so results can be verified without re-running.
 
 ---
 
@@ -166,7 +166,7 @@ If you use this tool in your research, please cite:
   title   = {{ROS2 Map Editor}: A Zero-Installation Browser Tool for Semantic
              Occupancy-Grid Editing, Navigation-Aware Path Preview, and
              {ICP}-Based Map Fusion},
-  journal = {IEEE Robotics and Automation Letters},
+  note    = {Preprint},
   year    = {2026},
   url     = {https://github.com/harsha200628/ros2-map-editor}
 }

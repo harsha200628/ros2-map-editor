@@ -1,7 +1,7 @@
 /**
  * benchmark_latency.js
  * ====================
- * Reproduces Table II of the companion IEEE RA-L paper.
+ * Reproduces Table II of the companion paper.
  *
  * Measures execution latency (n=30 runs) for four algorithm pipelines:
  *   1. File Load & Parse (PGM parser)

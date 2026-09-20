@@ -2,7 +2,7 @@
 """
 benchmark_icp.py
 ================
-Reproduces Table IV of the companion IEEE RA-L paper.
+Reproduces Table IV of the companion paper.
 
 Evaluates the 2-D ICP alignment routine on 5 synthetic indoor-environment
 occupancy-map pairs at 4 initial-pose-error levels (n=25 trials each),

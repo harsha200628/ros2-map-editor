@@ -2,7 +2,7 @@
 """
 benchmark_noise_filter.py
 =========================
-Reproduces Table III of the companion IEEE RA-L paper.
+Reproduces Table III of the companion paper.
 
 Applies two de-noising methods to 10 synthetic noise-corrupted occupancy maps
 at three noise levels (1 %, 3 %, 5 %), computes pixel-level F1 against
