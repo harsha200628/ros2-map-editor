@@ -166,7 +166,7 @@ If you use this tool in your research, please cite:
   title   = {{ROS2 Map Editor}: A Zero-Installation Browser Tool for Semantic
              Occupancy-Grid Editing, Navigation-Aware Path Preview, and
              {ICP}-Based Map Fusion},
-  note    = {Preprint},
+  
   year    = {2026},
   url     = {https://github.com/harsha200628/ros2-map-editor}
 }
