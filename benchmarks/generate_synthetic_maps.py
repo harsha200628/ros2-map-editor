@@ -36,7 +36,7 @@ os.makedirs("maps/icp", exist_ok=True)
 def write_pgm(path: str, arr: np.ndarray) -> None:
     """Write a 2-D uint8 array as a P5 (binary) PGM file."""
     h, w = arr.shape
-    header = f"P5\n# ROS2 Map Editor benchmark\n{w} {h}\n255\n".encode()
+    header = f"P5\n# 2D Occupancy Grid Map Editor benchmark\n{w} {h}\n255\n".encode()
     with open(path, "wb") as f:
         f.write(header)
         f.write(arr.astype(np.uint8).tobytes())

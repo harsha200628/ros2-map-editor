@@ -3,7 +3,7 @@
 This folder contains all scripts and pre-run results needed to reproduce the
 quantitative results reported in the companion paper:
 
-> GC Harsha Vardhan Reddy, "ROS2 Map Editor: A Zero-Installation Browser Tool
+> GC Harsha Vardhan Reddy, "2D Occupancy Grid Map Editor: A Zero-Installation Browser Tool
 > for Semantic Occupancy-Grid Editing, Navigation-Aware Path Preview, and
 > ICP-Based Map Fusion," 2026.
 

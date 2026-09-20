@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it using the metadata below."
-title: "ROS2 Map Editor: A Zero-Installation Browser Tool for Semantic Occupancy-Grid Editing, Navigation-Aware Path Preview, and ICP-Based Map Fusion"
+title: "2D Occupancy Grid Map Editor: A Browser Tool for Semantic Editing, Path Preview, and Map Fusion"
 authors:
   - family-names: Harsha Vardhan Reddy
     given-names: GC
@@ -23,7 +23,7 @@ keywords:
   - robotics
   - browser-tool
 abstract: >
-  ROS2 Map Editor is an open-source, purely client-side (HTML5 Canvas + JavaScript) web application
+  2D Occupancy Grid Map Editor is an open-source, purely client-side (HTML5 Canvas + JavaScript) web application
   for post-processing SLAM-generated occupancy grid maps. It provides semantic-value-aware raster
   editing, an 8-neighbourhood class-aware majority-vote noise filter, a Nav2-inspired costmap
   inflation preview via multi-source distance transform, an inflation-aware A* path planning preview,
@@ -35,7 +35,7 @@ preferred-citation:
     - family-names: Harsha Vardhan Reddy
       given-names: GC
       affiliation: "Department of EECE, GITAM Deemed to be University, Bengaluru, India"
-  title: "ROS2 Map Editor: A Zero-Installation Browser Tool for Semantic Occupancy-Grid Editing, Navigation-Aware Path Preview, and ICP-Based Map Fusion"
+  title: "2D Occupancy Grid Map Editor: A Browser Tool for Semantic Editing, Path Preview, and Map Fusion"
   
   year: 2026
   url: "https://github.com/harsha200628/ros2-map-editor"

@@ -1,4 +1,4 @@
-# ROS2 Map Editor 🤖🗺️
+# 2D Occupancy Grid Map Editor 🤖🗺️
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-blue)](https://harsha200628.github.io/ros2-map-editor/)
@@ -163,7 +163,7 @@ If you use this tool in your research, please cite:
 ```bibtex
 @article{harsha2026ros2mapeditor,
   author  = {GC Harsha Vardhan Reddy},
-  title   = {{ROS2 Map Editor}: A Zero-Installation Browser Tool for Semantic
+  title   = {{2D Occupancy Grid Map Editor}: A Zero-Installation Browser Tool for Semantic
              Occupancy-Grid Editing, Navigation-Aware Path Preview, and
              {ICP}-Based Map Fusion},
   

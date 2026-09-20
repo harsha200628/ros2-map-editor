@@ -1,6 +1,6 @@
 \documentclass[journal]{IEEEtran}
 % ============================================================
-%  ROS2 Map Editor -- Manuscript
+%  2D Occupancy Grid Map Editor -- Manuscript
 %  Compile: pdflatex -> bibtex -> pdflatex -> pdflatex
 % ============================================================
 \usepackage{amsmath,amssymb}
@@ -18,8 +18,7 @@
 
 \begin{document}
 
-\title{\LARGE ROS2 Map Editor: A Zero-Installation Browser Tool for Semantic
-Occupancy-Grid Editing, Navigation-Aware Path Preview, and ICP-Based Map Fusion}
+\title{\LARGE 2D Occupancy Grid Map Editor: A Browser Tool for Semantic Editing, Path Preview, and Map Fusion}
 
 \author{GC Harsha Vardhan Reddy\\
 Department of EECE, GITAM Deemed to be University\\
@@ -46,7 +45,7 @@ anti-aliased brush stroke can silently corrupt the map; (ii)~edits are
 the only feasible path before deployment; and (iii)~combining maps from
 multiple sessions or robots requires either re-running SLAM or manually
 eyeballing a rotation and translation with no alignment assistance.
-This paper presents \emph{ROS2 Map Editor}, an open-source, purely
+This paper presents \emph{2D Occupancy Grid Map Editor}, an open-source, purely
 client-side (HTML5 Canvas~+~JavaScript) web application that treats every
 pixel as a first-class semantic value and addresses the three deficiencies
 above through four robotics-specific algorithms: (i)~an 8-neighbourhood
@@ -108,7 +107,7 @@ multiple SLAM runs or multiple robots requires either re-running SLAM with
 merged bag files or manually eyeballing a rotation and translation in an
 editor with no alignment assistance -- a laborious and error-prone process.
 
-This paper presents \emph{ROS2 Map Editor}, a single-page web application
+This paper presents \emph{2D Occupancy Grid Map Editor}, a single-page web application
 running entirely inside the browser (no ROS installation, no backend server,
 no data leaving the client), addressing all three problems above.  Its
 specific, verifiable contributions are:
@@ -816,7 +815,7 @@ between 2-D navigation debugging and full volumetric environment curation.
 \label{sec:conclusion}
 % ============================================================
 
-We presented \emph{ROS2 Map Editor}, an open-source, installation-free browser
+We presented \emph{2D Occupancy Grid Map Editor}, an open-source, installation-free browser
 application that unifies semantic occupancy-value editing, morphological noise
 cleanup, a Nav2-inspired costmap inflation preview, a cost-aware $A^{*}$ path
 planning preview, and ICP-based multi-map fusion into a single zero-dependency
@@ -844,7 +843,7 @@ extend the interactive threshold to larger map resolutions.
 \section*{Data and Code Availability}
 % ============================================================
 
-The \emph{ROS2 Map Editor} is released under the MIT License.
+The \emph{2D Occupancy Grid Map Editor} is released under the MIT License.
 Source code, issue tracker, and documentation are hosted at
 \url{https://github.com/harsha200628/ros2-map-editor}.
 A live demo requiring no installation is at
