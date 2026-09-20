@@ -1,7 +1,10 @@
 \documentclass[journal]{IEEEtran}
 % ============================================================
-%  2D Occupancy Grid Map Editor -- Manuscript
-%  Compile: pdflatex -> bibtex -> pdflatex -> pdflatex
+%  ROS2 Map Editor -- IEEE RA-L submission
+%  Compile with pdflatex on Overleaf (IEEEtran.cls is preloaded
+%  there). Recommended Overleaf template: "IEEE RA-L" official
+%  template -- you may drop this body text into that template
+%  if your submission portal requires the exact RA-L class file.
 % ============================================================
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
@@ -18,7 +21,7 @@
 
 \begin{document}
 
-\title{\LARGE 2D Occupancy Grid Map Editor: A Browser Tool for Semantic Editing, Path Preview, and Map Fusion}
+\title{\LARGE ROS2 Map Editor: A Zero-Installation Browser Tool for Semantic Occupancy-Grid Editing, Navigation-Aware Path Preview, and ICP-Based Map Fusion}
 
 \author{GC Harsha Vardhan Reddy\\
 Department of EECE, GITAM Deemed to be University\\
@@ -28,49 +31,14 @@ Bengaluru, India -- harshavardhanh426@gmail.com}
 \thispagestyle{empty}
 \maketitle
 
-% ============================================================
 \begin{abstract}
-% ============================================================
-Occupancy-grid maps produced by SLAM back-ends such as \emph{slam\_toolbox}
-or \emph{Cartographer} are rarely deployment-ready: sensor noise corrupts
-free-space regions with stray pixels, transient obstacles occlude doorways,
-and multi-session mapping scenarios demand map fusion before a Nav2-based robot
-can navigate autonomously.  The conventional remedy -- opening the exported
-Portable Gray Map (PGM) in a generic raster editor such as GIMP and
-hand-editing pixels -- has three fundamental deficiencies: (i)~raster editors
-are \emph{semantically blind}, operating on raw pixel intensities rather than
-the conventional trinary occupancy values $\{0,\,205,\,254\}$, so a single
-anti-aliased brush stroke can silently corrupt the map; (ii)~edits are
-\emph{unverified}, with no mechanism to check whether a modification blocks
-the only feasible path before deployment; and (iii)~combining maps from
-multiple sessions or robots requires either re-running SLAM or manually
-eyeballing a rotation and translation with no alignment assistance.
-This paper presents \emph{2D Occupancy Grid Map Editor}, an open-source, purely
-client-side (HTML5 Canvas~+~JavaScript) web application that treats every
-pixel as a first-class semantic value and addresses the three deficiencies
-above through four robotics-specific algorithms: (i)~an 8-neighbourhood
-class-aware majority-vote filter for salt-and-pepper noise removal that
-explicitly preserves unknown-space boundaries -- achieving pixel-level
-F1~=~0.961/0.934/0.907 at 1\,\%/3\,\%/5\,\% noise vs.\ 0.943/0.891/0.843
-for standard median filtering; (ii)~a Nav2-inspired distance-transform
-costmap inflation preview with mean boundary IoU~=~$0.87\pm0.04$ against
-Nav2~Humble \texttt{costmap\_2d}; (iii)~an inflation-aware $A^{*}$ planner
-providing navigation-indicative path preview in $44.1\pm3.2$\,ms on a
-$1024\times1024$ map; and (iv)~a 2-D ICP routine with spatial-hash
-nearest-neighbour acceleration, achieving 91\,\% alignment success
-within~$\pm15^{\circ}$ initial pose error.  Requiring no installation, no ROS
-runtime, and no server backend, the tool lowers the barrier to rapid,
-semantically correct map curation with integrated navigation preview.
-All source code and benchmark scripts are publicly available under the MIT
-License at \url{https://github.com/harsha200628/ros2-map-editor}.
+Occupancy-grid maps produced by SLAM back-ends such as \emph{slam\_toolbox} or \emph{Cartographer} are rarely deployment-ready: sensor noise leaves stray pixels, doorways remain occluded by transient obstacles, and multiple mapping sessions must be fused into a single global map before a Nav2-based robot can be trusted to navigate autonomously. The conventional remedy is to open the exported Portable Gray Map (PGM) in a generic raster editor such as GIMP or Photoshop, and hand-edit pixels with no awareness of their semantic meaning (free, occupied, unknown), no feedback on how the edit affects the robot's navigable space, and no support for combining maps. This letter presents \emph{ROS2 Map Editor}, an open-source, purely client-side (HTML5 Canvas + JavaScript) web application that treats every pixel as a first-class semantic value and couples direct raster editing with four robotics-specific algorithms: (i) an 8-neighbourhood majority-vote filter for salt-and-pepper noise removal, (ii) a Nav2-inspired distance-transform costmap inflation preview using a configurable distance-based cost model, (iii) an $A^{*}$ planner with a soft inflation-aware cost term for navigation-aware path planning preview, and (iv) a 2-D Iterative Closest Point (ICP) routine for automatic multi-session map alignment. We detail the algorithms, present system and control-flow diagrams, and provide a feature-level comparison against five representative categories of existing tools -- raster editors, ROS-native plugins, Python scripting pipelines, commercial suites, and web-based visualization tools. Requiring no installation, no ROS runtime, and no server backend, the tool lowers the barrier for rapid, semantically correct map curation with integrated navigation preview.
 \end{abstract}
 
 \begin{IEEEkeywords}
-SLAM, occupancy-grid map, semantic map editing, costmap inflation, path
-planning, iterative closest point, ROS2, Nav2, browser-based tool,
-human--robot interaction.
+SLAM, occupancy grid map, map editing, costmap inflation, path planning, iterative closest point, ROS2, Nav2, human-robot interaction.
 \end{IEEEkeywords}
-
+\vspace{-2mm}
 % ============================================================
 \section{Introduction}
 \label{sec:intro}
