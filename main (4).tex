@@ -100,9 +100,7 @@ map loading to misclassify pixels.
 
 \textbf{Unverified edits.}  No feedback exists on whether a hand-drawn wall
 blocks the only feasible robot path through a doorway before the map is
-flashed to the physical robot and Nav2 is restarted.
-
-\textbf{Absence of multi-session fusion support.}  Combining maps from
+flashed to the physical robot and Nav2 is restarted. \textbf{Absence of multi-session fusion support.}  Combining maps from
 multiple SLAM runs or multiple robots requires either re-running SLAM with
 merged bag files or manually eyeballing a rotation and translation in an
 editor with no alignment assistance -- a laborious and error-prone process.
@@ -114,26 +112,11 @@ specific, verifiable contributions are:
 
 \begin{enumerate}
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}
-  \item A semantic-value-aware raster editing surface (brush, polygon,
-  rectangle, circle) that constrains every drawing operation to the valid
-  occupancy alphabet $\{0,205,254\}$, with multi-level undo/redo history
-  (up to 40 buffered states).
-  \item An 8-neighbourhood class-aware majority-vote de-noising filter that
-  removes isolated pixel noise while explicitly preserving unknown-space
-  boundaries -- outperforming standard median filtering at all tested noise
-  levels (Table~\ref{tab:noiseval}).
-  \item A Nav2-inspired costmap inflation preview computed via a multi-source
-  octile-distance BFS, achieving mean boundary IoU~=~$0.87\pm0.04$ against
-  Nav2~Humble \texttt{costmap\_2d}; coupled with a cost-aware $A^{*}$ path
-  planning preview that runs in $<\!100$\,ms on maps up to $1024\times1024$
-  pixels.
-  \item A 2-D point-to-point ICP routine with a uniform spatial hash for
-  nearest-neighbour search, achieving 91\,\% alignment success rate within
-  $\pm15^{\circ}$/$\pm0.20$\,m initial pose error on 5 synthetic
-  indoor-environment map pairs.
-  \item Integrated metric measurement (line/path/area) and waypoint authoring
-  with heading (quaternion) export to JSON for direct consumption by an
-  autonomy stack.
+  \item A semantic-value-aware raster editing surface constrained to $\{0,205,254\}$, with multi-level undo/redo.
+  \item An 8-neighbourhood class-aware majority-vote de-noising filter that preserves unknown-space boundaries (Table~\ref{tab:noiseval}).
+  \item A Nav2-inspired costmap inflation preview via octile-distance BFS, coupled with an interactive $A^{*}$ path planning preview.
+  \item A 2-D ICP routine with a uniform spatial hash, achieving 91\,\% alignment success within $\pm15^{\circ}$ initial error.
+  \item Integrated metric measurement and waypoint authoring with JSON export.
 \end{enumerate}
 
 Section~\ref{sec:related} positions the tool against existing approaches.
@@ -745,8 +728,8 @@ ICP total ($I$ iterations)         & $O(I\cdot k)$ \\
 \end{table}
 
 % ============================================================
-\section{Limitations}
-\label{sec:limitations}
+\section{Limitations and Future Work}
+\label{sec:limitations_future}
 % ============================================================
 
 Several limitations of the current implementation merit explicit
@@ -783,8 +766,7 @@ different CPUs and browsers; the algorithmic complexity relationships of
 Table~\ref{tab:complexity} are hardware-independent.
 
 % ============================================================
-\section{Future Work}
-\label{sec:future_work}
+
 % ============================================================
 
 Our immediate roadmap includes three targeted improvements.
@@ -856,7 +838,7 @@ is required to reproduce the reported results.
 
 % ============================================================
 \begin{thebibliography}{99}
-\footnotesize
+\scriptsize
 \setlength{\itemsep}{0pt}
 \setlength{\parskip}{0pt}
 
