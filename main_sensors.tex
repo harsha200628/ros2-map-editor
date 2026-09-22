@@ -27,8 +27,7 @@
 \markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2026}%
 {Reddy: 2D Occupancy Grid Map Editor}
 
-\maketitle
-
+\IEEEtitleabstractindextext{%
 \begin{abstract}
 Occupancy-grid maps produced by SLAM back-ends such as \emph{slam\_toolbox} or \emph{Cartographer} are rarely deployment-ready: sensor noise leaves stray pixels, doorways remain occluded by transient obstacles, and multiple mapping sessions must be fused into a single global map before a Nav2-based robot can be trusted to navigate autonomously. The conventional remedy is to open the exported Portable Gray Map (PGM) in a generic raster editor such as GIMP or Photoshop, and hand-edit pixels with no awareness of their semantic meaning (free, occupied, unknown), no feedback on how the edit affects the robot's navigable space, and no support for combining maps. This paper presents \emph{2D Occupancy Grid Map Editor}, an open-source, purely client-side (HTML5 Canvas + JavaScript) web application that treats every pixel as a first-class semantic value and couples direct raster editing with four robotics-specific algorithms: (i) an 8-neighbourhood majority-vote filter for salt-and-pepper noise removal, (ii) a Nav2-inspired distance-transform costmap inflation preview using a configurable distance-based cost model, (iii) an $A^{*}$ planner with a soft inflation-aware cost term for navigation-aware path planning preview, and (iv) a 2-D Iterative Closest Point (ICP) routine for automatic multi-session map alignment. We detail the algorithms, present system and control-flow diagrams, and provide a feature-level comparison against five representative categories of existing tools -- raster editors, ROS-native plugins, Python scripting pipelines, commercial suites, and web-based visualization tools. Requiring no installation, no ROS runtime, and no server backend, the tool lowers the barrier for rapid, semantically correct map curation with integrated navigation preview.
 \end{abstract}
@@ -36,7 +35,10 @@ Occupancy-grid maps produced by SLAM back-ends such as \emph{slam\_toolbox} or \
 \begin{IEEEkeywords}
 SLAM, occupancy grid map, map editing, costmap inflation, path planning, iterative closest point, ROS2, Nav2, human-robot interaction.
 \end{IEEEkeywords}
+}
 
+\maketitle
+\IEEEdisplaynontitleabstractindextext
 \IEEEpeerreviewmaketitle
 
 % ============================================================
